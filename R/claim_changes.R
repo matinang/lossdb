@@ -36,35 +36,45 @@
 #'         values = c("paid_loss_only", "incurred_loss_only", "claim_cts"))
 claim_changes <- function(ldf, calendar1, calendar2, values = NULL) {
   if (is.null(ldf$id)) {
-    stop("Your 'loss_df' must have an `id` value to use the 'claim_changes' function")
+    stop("Your 'loss_df' must have an `id` value
+         to use the 'claim_changes' function")
   }
-  
+
   # columns to exclude
   x_cols <- c("dev", "calendar")
-  # columns to merge by 
+  # columns to merge by
   by_cols <- c("id", "origin")
-  
+
   # select values to be compared depending on 'values' argument
   # and create new data of merged data frames by selected calendar period
   if (is.null(values)) {
-    comparison <- merge_ldf(ldf, calendar1, calendar2, by = by_cols, exclude = x_cols)
+    comparison <- merge_ldf(ldf, calendar1, calendar2,
+                            by = by_cols, exclude = x_cols)
     values <- setdiff(names(ldf), meta)
   } else {
     ldf2 <- select_ldf(ldf, values = c(meta, values))
-    comparison <- merge_ldf(ldf2, calendar1, calendar2, by = by_cols, exclude = x_cols)
+    comparison <- merge_ldf(ldf2, calendar1, calendar2,
+                            by = by_cols, exclude = x_cols)
   }
-  
+
   # create change columns showing difference in value columns
   for (i in seq_along(values)) {
-    comparison[, length(comparison) + 1] <- comparison[, paste0(values[i], "_", calendar1)] -
+    comparison[, length(comparison) + 1] <- comparison[, paste0(values[i], "_",
+                                                                calendar1)] -
       comparison[, paste0(values[i], "_", calendar2)]
     names(comparison)[length(comparison)] <- paste0(values[i], "_change")
   }
-  
+
   # find all rows containing differing values
-  change <- apply(comparison[, (length(comparison) + 1 - length(values)):length(comparison), drop = FALSE], 1, 
-                  function(x) ifelse(isTRUE(all.equal(x, rep(0, length(x)), check.attributes = FALSE, tolerance = .005)), FALSE, TRUE))
-  
+  change <- apply(comparison[, (length(comparison) +
+                                  1 - length(values)):length(comparison),
+                             drop = FALSE], 1,
+                  function(x) ifelse(
+                    isTRUE(all.equal(x, rep(0, length(x)),
+                                     check.attributes = FALSE,
+                                     tolerance = .005)),
+                    FALSE, TRUE))
+
   # organize and return
   comparison <- comparison[change, ]
   comparison <- comparison[order(comparison[, 2], comparison[, 1]), ]

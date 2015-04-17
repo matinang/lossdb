@@ -1,6 +1,6 @@
 test_df <- data.frame(id = c("A1", "A1", "A1",
                              "A2", "A2", "A2",
-                             "B1", "B1", 
+                             "B1", "B1",
                              "B2", "B2",
                              "B3", "B3",
                              "C1"),
@@ -24,7 +24,8 @@ test_df <- data.frame(id = c("A1", "A1", "A1",
                                     7)
 )
 
-test_df <- loss_df(test_df, id = "id", origin = "origin", dev = "dev", paid = "paid_loss")
+test_df <- loss_df(test_df, id = "id", origin = "origin",
+                   dev = "dev", paid = "paid_loss")
 
-test_df_incomplete <- test_df[-which(test_df[, "dev"] == 1 & test_df[, "origin"] == 2012), ]
-
+test_df_incomplete <- test_df[-which(test_df[, "dev"] == 1 &
+                                       test_df[, "origin"] == 2012), ]

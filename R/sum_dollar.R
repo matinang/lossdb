@@ -8,15 +8,20 @@
 #' 
 #' @examples
 #' sum_dollar(ldf = ldf_data, dollar = "paid")
-sum_dollar <- function(ldf, dollar) {  
+sum_dollar <- function(ldf, dollar) {
   if (length(dollar) != 1 || length(intersect(detail$dollar, dollar))) {
     dollar_cats <- unname(unlist(detail$dollar))
     stop(paste0("dollar must be one of the following: ", dollar_cats))
   }
   if (dollar %in% detail$dollar$loss) {
-    dollar_cols <- ldf[ , intersect(names(ldf), attr(ldf, "detail")$dollar$loss[[dollar]]), drop = FALSE]
+    dollar_cols <- ldf[ , intersect(names(ldf),
+                                    attr(ldf, "detail")$dollar$loss[[dollar]]),
+                        drop = FALSE]
   } else {
-    dollar_cols <- ldf[ , intersect(names(ldf), attr(ldf, "detail")$dollar$recovery[[dollar]]), drop = FALSE]
+    dollar_cols <- ldf[ , intersect(names(ldf),
+                                    attr(ldf,
+                                         "detail")$dollar$recovery[[dollar]]),
+                        drop = FALSE]
   }
   apply(dollar_cols, 1, sum, na.rm = TRUE)
 }
